@@ -72,7 +72,9 @@ function boot() {
     log('Hosted Fields rendered. The card inputs above are PayPal iframes.');
     document.getElementById('pay').addEventListener('click', () => {
       log('submitting...');
-      hf.submit({ contingencies: ['3D_SECURE'] })
+      // plain submit: forcing contingencies: ['3D_SECURE'] makes this sandbox return
+      // authenticationStatus FAILURE and the order is never approved
+      hf.submit()
         .then((r) => log('submit resolved: ' + JSON.stringify(r)))
         .catch((e) => log('submit rejected: ' + (e && e.message)));
     });
