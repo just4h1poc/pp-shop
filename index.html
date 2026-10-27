@@ -55,8 +55,8 @@ SDK from <code>www.paypal.com</code> with <code>components=hosted-fields</code>,
 <script>
 // baked by bake.py so a recording needs no typing; override with ?client-id=&client-token=&order-id=
 const BAKED_CID = 'BAAZJk4mOoefN6A2YKUmdHRRlhYabTO5vRj1Zo4V35GtvNmqPuVB1r4vF1meT2cov1ob6FKyg4pqpadkLc';
-const BAKED_CT = 'eyJicmFpbnRyZWUiOnsiYXV0aG9yaXphdGlvbkZpbmdlcnByaW50IjoiN2Q5YTAzMzBhMDA3OTllZmE4M2NiY2IxYjRkZDJjZTgxYjZkNzIzOTljNzU1ZjYwNjJkM2I1MTRiMzUyOThhYnxtZXJjaGFudF9pZD1yd3dua3FnMnhnNTZobTJuJnB1YmxpY19rZXk9NjNrdm4zN3Z0MjlxYjRkZiZjcmVhdGVkX2F0PTIwMjYtMTAtMjZUMTU6MTc6MDMuOTE0NTc1NDAxWiIsInZlcnNpb24iOiIzLXBheXBhbCJ9LCJwYXlwYWwiOnsiaWRUb2tlbiI6bnVsbCwiYWNjZXNzVG9rZW4iOiJBMjFBQUpMWFQxSmtZTTNRRkxEUDdZUGQ5QXFQOGxGRkdwOE83T2lVMUFqQjRubjNoaW51UXFrTXJvZ3liaUZzNTBfamdHajdGdy1venVEOHh0LS01UHRzWUV3Y1Qyanh3In19';
-const BAKED_ORDER = '023375745K2959637';
+const BAKED_CT = 'eyJicmFpbnRyZWUiOnsiYXV0aG9yaXphdGlvbkZpbmdlcnByaW50IjoiNDIzMDZlOWZjYWM4ZjhiNTgyOTM4MWNlZmE2MTg0MDExMWE4MmQ2NTIyZjMxNjgyNzkzYmI0ZjA3ZWJmYmUyZnxtZXJjaGFudF9pZD1yd3dua3FnMnhnNTZobTJuJnB1YmxpY19rZXk9NjNrdm4zN3Z0MjlxYjRkZiZjcmVhdGVkX2F0PTIwMjYtMTAtMjdUMTY6NDI6MzEuODk3MTE2NzIxWiIsInZlcnNpb24iOiIzLXBheXBhbCJ9LCJwYXlwYWwiOnsiaWRUb2tlbiI6bnVsbCwiYWNjZXNzVG9rZW4iOiJBMjFBQUkzRzlPLWhrQmZFemtBRXNaR19BZG5BUVNDc0hxUkh6ZGsxZ3B6TVN2WjE0QkkweVpPYXdnUnBxb1RNMGZha3Y0WTZKN0djbUxKUzhlcnktelJ4MjY5MWFaUHp3In19';
+const BAKED_ORDER = '9UH89970P9068305D';
 
 const q = new URLSearchParams(location.search);
 const status = document.getElementById('status');
@@ -111,7 +111,9 @@ function boot() {
       // authenticationStatus FAILURE and the order is never approved
       hf.submit()
         .then((r) => log('submit resolved: ' + JSON.stringify(r)))
-        .catch((e) => log('submit rejected: ' + (e && e.message)));
+        // Hosted Fields rejects with an object that often has no .message, which printed the
+        // useless "submit rejected: undefined". Dump the whole thing so a failure is diagnosable.
+        .catch((e) => log('submit rejected: ' + JSON.stringify(e, Object.getOwnPropertyNames(Object(e)))));
     });
   }).catch((e) => log('render failed: ' + (e && e.message)));
 }
